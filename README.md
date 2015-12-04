@@ -1,26 +1,82 @@
-# [Start Bootstrap](http://startbootstrap.com/) - [The Big Picture](http://startbootstrap.com/template-overviews/the-big-picture/)
+# ShaderToy
+WebGL Renderer for quick shader based toys.
+If you are familiar with [http://shadertoy.com](http://shadertoy.com), you will quickly be able to use this tool.
 
-[The Big Picture](http://startbootstrap.com/template-overviews/the-big-picture/) is a responsive HTML template for [Bootstrap](http://getbootstrap.com/) created by [Start Bootstrap](http://startbootstrap.com/). The template features a full page background image and a fixed bottom navigation bar.
+### Example ###
+[![Basic Example](http://andrevenancio.com/thumbnails/1.png)](http://andrevenancio.com/experiments/1.html)
 
-## Getting Started
+### Shader Inputs ###
+```glsl
+// viewport resolution (in pixels).
+uniform vec2 iResolution;
 
-To use this template, choose one of the following options to get started:
-* Download the latest release on Start Bootstrap
-* Fork this repository on GitHub
+// shader playback time (in seconds).
+uniform vec2 iGlobalTime;
 
-## Bugs and Issues
+// mouse pixel coordinates.
+uniform vec2 iMouse;
 
-Have a bug or an issue with this template? [Open a new issue](https://github.com/IronSummitMedia/startbootstrap-the-big-picture/issues) here on GitHub or leave a comment on the [template overview page at Start Bootstrap](http://startbootstrap.com/template-overviews/the-big-picture/).
+// input texture.
+uniform sampler2D iChannel0;
+```
 
-## Creator
+### Usage ###
 
-Start Bootstrap was created by and is maintained by **David Miller**, Managing Parter at [Iron Summit Media Strategies](http://www.ironsummitmedia.com/).
+The most basic usage is described below. This will start the factory shader.
+```html
+<script>
 
-* https://twitter.com/davidmillerskt
-* https://github.com/davidtmiller
+    var renderer;
 
-Start Bootstrap is based on the [Bootstrap](http://getbootstrap.com/) framework created by [Mark Otto](https://twitter.com/mdo) and [Jacob Thorton](https://twitter.com/fat).
+    init()
+    update()
 
-## Copyright and License
+    function init() {
 
-Copyright 2013-2015 Iron Summit Media Strategies, LLC. Code released under the [Apache 2.0](https://github.com/IronSummitMedia/startbootstrap-the-big-picture/blob/gh-pages/LICENSE) license.
+        renderer = new ShaderToy();
+        renderer.setSize( window.innerWidth, window.innerHeight );
+
+    }
+
+    function update() {
+
+        requestAnimationFrame( update );
+
+        renderer.render();
+
+    }
+
+</script>
+```
+
+Next you need to decide how to feed the new shader. You can load an external GLSL file by calling the `.loadFragment()` method, or you can write your shader inline accessing directly the `.writeFragment()` method.
+
+
+Loading an external file:
+```javascript
+function init() {
+
+    renderer = new ShaderToy();
+    renderer.setSize( window.innerWidth, window.innerHeight );
+    renderer.loadFragment( 'path/to/my/glsl.file' );
+
+}
+```
+
+Writing inline:
+```javascript
+function init() {
+
+    renderer = new ShaderToy();
+    renderer.setSize( window.innerWidth, window.innerHeight );
+
+    var fragment = [
+        'void mainImage( out vec4 fragColor, in vec2 fragCoord ) {',
+        '   fragColor.rgb = vec3( 0.0, 1.0, 1.0 );',
+        '}'
+    ].join( '\n' );
+
+    renderer.writeFragment( fragment );
+
+}
+```

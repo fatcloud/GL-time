@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-        <title>Basic</title>
+        <title>Texture</title>
         <style>
             html, body {
                 width: 100%;
@@ -32,7 +32,17 @@
                 renderer = new ShaderToy();
                 renderer.setSize(window.innerWidth, window.innerHeight);
 
-                renderer.loadFragment( '/glsl/seascape.fs' );
+                var fragment = [
+                    'void mainImage( out vec4 fragColor, in vec2 fragCoord ) {',
+                    '    vec2 uv = fragCoord / iResolution.y;',
+                    '    // Lemniscate of Gerono :)',
+                    '    uv.x += 0.5 + 0.5 * cos( iGlobalTime );',
+                    '    uv.y += 0.5 + 0.5 * sin( 2.0 * iGlobalTime ) / 2.0;',
+                    '    fragColor = texture2D( iChannel0, uv );',
+                    '}'].join('\n');
+
+                renderer.writeFragment(fragment);
+                renderer.loadImage('uv.png');
 
                 window.addEventListener('resize', resize.bind(this));
 

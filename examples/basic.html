@@ -32,7 +32,13 @@
                 renderer = new ShaderToy();
                 renderer.setSize(window.innerWidth, window.innerHeight);
 
-                renderer.loadFragment( '/glsl/seascape.fs' );
+                var fragment = [
+                    'void mainImage( out vec4 fragColor, in vec2 fragCoord ) {',
+                    '   vec2 uv = fragCoord.xy / iResolution.xy;',
+                    '   fragColor.rgb = vec3( uv, 0.5 + 0.5 * cos( iGlobalTime ) );',
+                    '}'].join('\n');
+
+                renderer.writeFragment(fragment);
 
                 window.addEventListener('resize', resize.bind(this));
 
